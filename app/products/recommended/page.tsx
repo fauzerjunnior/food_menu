@@ -1,13 +1,19 @@
 import Header from "@/app/_components/header";
-import ProductList from "@/app/_components/product-list";
+import ProductItem from "@/app/_components/product-item";
 import { db } from "@/app/_lib/prisma";
 
 const RecommendedOrders = async () => {
-  const categories = await db.category.findMany({
+  const products = await db.product.findMany({
+    where: {
+      discountPercentage: {
+        gt: 0,
+      },
+    },
+    take: 20,
     include: {
-      product: {
-        include: {
-          restaurant: true,
+      restaurant: {
+        select: {
+          name: true,
         },
       },
     },
@@ -16,17 +22,16 @@ const RecommendedOrders = async () => {
   return (
     <>
       <Header />
-      <div className="py-6">
-        <h2 className="mb-6 px-5 text-lg font-semibold">
-          Produtos Recomendados
-        </h2>
+      <div className="px-5 py-6">
+        <h2 className="mb-6 text-lg font-semibold">Produtos recomendados</h2>
 
-        <div className="flex w-full flex-col gap-6">
-          {categories.map((category) => (
-            <div className="mt-6 space-y-4" key={category.id}>
-              <h2 className="px-5 font-semibold">{category.name}</h2>
-              <ProductList products={category.product} />
-            </div>
+        <div className="grid grid-cols-2 gap-6">
+          {products.map((product) => (
+            <ProductItem
+              key={product.id}
+              product={product}
+              className="min-w-full"
+            />
           ))}
         </div>
       </div>
