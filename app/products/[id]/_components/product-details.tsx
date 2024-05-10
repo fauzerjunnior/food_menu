@@ -118,11 +118,9 @@ const ProductDetails = ({ product, relatedProducts }: ProductDetailsProps) => {
               <span className="text-xs">Tempo de entrega</span>
             </div>
 
-            {Number(product.restaurant.deliveryFee) > 0 ? (
-              <div className="text-xs font-semibold">{deliveryFee}</div>
-            ) : (
-              <p className="text-xs font-semibold">Grátis</p>
-            )}
+            <p className="text-xs font-semibold">
+              {product.restaurant.deliveryTimeMinutes} min
+            </p>
           </div>
         </Card>
       </div>
