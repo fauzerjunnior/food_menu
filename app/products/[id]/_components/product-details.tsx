@@ -4,6 +4,16 @@ import Cart from "@/app/_components/cart";
 import DeliveryInfo from "@/app/_components/delivery-info";
 import DiscountBadge from "@/app/_components/discount-badge";
 import ProductList from "@/app/_components/product-list";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/app/_components/ui/alert-dialog";
 import { Button } from "@/app/_components/ui/button";
 import {
   Sheet,
@@ -19,7 +29,7 @@ import {
 import { Prisma } from "@prisma/client";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 
 interface ProductDetailsProps {
   product: Prisma.ProductGetPayload<{
@@ -37,12 +47,10 @@ interface ProductDetailsProps {
 const ProductDetails = ({ product, relatedProducts }: ProductDetailsProps) => {
   const [quantity, setQuantity] = useState(1);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
+    useState(false);
 
   const { addProductToCart, products } = useContext(CartContext);
-
-  useEffect(() => {
-    console.log("=== products", products);
-  }, [products]);
 
   const price = formatCurrency(calculateProductTotalPrice(product));
 
@@ -56,9 +64,21 @@ const ProductDetails = ({ product, relatedProducts }: ProductDetailsProps) => {
       return currentState - 1;
     });
 
-  const handleAddToCart = () => {
-    addProductToCart(product, quantity);
+  const addToCart = ({ emptyCart = false }: { emptyCart?: boolean }) => {
+    addProductToCart({ product, quantity, emptyCart });
     setIsCartOpen(true);
+  };
+
+  const handleAddToCart = () => {
+    const hasDifferentRestaurantInCart = products.some(
+      (item) => item.restaurantId !== product.restaurantId,
+    );
+
+    if (hasDifferentRestaurantInCart) {
+      return setIsConfirmationDialogOpen(true);
+    }
+
+    addToCart({ emptyCart: false });
   };
 
   return (
@@ -112,7 +132,9 @@ const ProductDetails = ({ product, relatedProducts }: ProductDetailsProps) => {
           </div>
         </div>
 
-        <DeliveryInfo restaurant={product.restaurant} />
+        <div className="px-5">
+          <DeliveryInfo restaurant={product.restaurant} />
+        </div>
 
         <div className="mt-6 space-y-3 px-5">
           <h3 className="font-semibold">Sobre</h3>
@@ -141,6 +163,29 @@ const ProductDetails = ({ product, relatedProducts }: ProductDetailsProps) => {
           <Cart />
         </SheetContent>
       </Sheet>
+
+      <AlertDialog
+        open={isConfirmationDialogOpen}
+        onOpenChange={setIsConfirmationDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Você só pode adicionar itens de um restaurante por vez
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Deseja mesmo adicionar este produto à sacola? Isso esvaziará a
+              sacola atual.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => addToCart({ emptyCart: true })}>
+              Esvaziar sacola e adicionar produto
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
