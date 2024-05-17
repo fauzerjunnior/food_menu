@@ -23,7 +23,15 @@ interface ICartContext {
   totalPrice: number;
   totalDiscounts: number;
   products: CartProduct[];
-  addProductToCart: (products: Product, quantity: number) => void;
+  addProductToCart: ({
+    product,
+    quantity,
+    emptyCart,
+  }: {
+    product: Product;
+    quantity: number;
+    emptyCart?: boolean;
+  }) => void;
   decreaseProductQuantity: (productId: string) => void;
   increateProductQuantity: (productId: string) => void;
   removeProductFromCart: (productId: string) => void;
@@ -57,7 +65,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const totalDiscounts = subtotalPrice - totalPrice;
 
-  const addProductToCart = (product: Product, quantity: number) => {
+  const addProductToCart = ({
+    product,
+    quantity,
+    emptyCart,
+  }: {
+    product: Product;
+    quantity: number;
+    emptyCart?: boolean;
+  }) => {
+    const hasDifferentRestaurantInCart = products.some(
+      (item) => item.restaurantId !== product.restaurantId,
+    );
+
+    if (hasDifferentRestaurantInCart) {
+      setProducts([]);
+    }
+
     const isProductAlreadyInCart = products.some(
       (cartProduct) => cartProduct.id === product.id,
     );
