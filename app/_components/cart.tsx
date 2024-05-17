@@ -10,7 +10,9 @@ const Cart = () => {
   const { products, subtotalPrice, totalPrice, totalDiscounts } =
     useContext(CartContext);
 
-  const deliveryFee = Number(products[0].restaurant.deliveryFee);
+  const deliveryFee = !!products.length
+    ? Number(products[0].restaurant.deliveryFee)
+    : 0;
 
   const renderShippingInfo = () =>
     deliveryFee === 0 ? (
