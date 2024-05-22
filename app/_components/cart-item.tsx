@@ -12,12 +12,12 @@ interface CartItem {
 const CartItem = ({ cartProduct }: CartItem) => {
   const {
     decreaseProductQuantity,
-    increateProductQuantity,
+    increaseProductQuantity,
     removeProductFromCart,
   } = useContext(CartContext);
 
   const handleIncreaseProductQuantity = () => {
-    increateProductQuantity(cartProduct.id);
+    increaseProductQuantity(cartProduct.id);
   };
 
   const handleDecreaseProductQuantity = () => {
