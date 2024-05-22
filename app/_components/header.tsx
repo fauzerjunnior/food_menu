@@ -21,6 +21,7 @@ import {
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
+import MenuItem from "./menu-item";
 
 const Header = () => {
   const { data } = useSession();
@@ -97,49 +98,34 @@ const Header = () => {
           </div>
 
           <div className="space-y-2">
-            <Button
-              variant="ghost"
-              className="w-full justify-start space-x-3 rounded-full text-sm font-normal"
-            >
-              <HomeIcon size={16} />
-              <span className="block">Início</span>
-            </Button>
+            <MenuItem icon={<HomeIcon size={16} />} title="Início" />
 
-            {data?.user && (
-              <Button
-                variant="ghost"
-                className="w-full justify-start space-x-3 rounded-full text-sm font-normal"
-              >
-                <ScrollTextIcon size={16} />
-                <span className="block">Meus pedidos</span>
-              </Button>
-            )}
+            <MenuItem
+              icon={<ScrollTextIcon size={16} />}
+              title="Meus pedidos"
+              isPrivate
+              isAuthenticated={!!data?.user}
+            />
 
-            {data?.user && (
-              <Button
-                variant="ghost"
-                className="w-full justify-start space-x-3 rounded-full text-sm font-normal"
-              >
-                <HeartIcon size={16} />
-                <span className="block">Restaurantes favoritos</span>
-              </Button>
-            )}
+            <MenuItem
+              icon={<HeartIcon size={16} />}
+              title="Restaurantes favoritos"
+              isPrivate
+              isAuthenticated={!!data?.user}
+            />
           </div>
 
           <div className="py-6">
             <Separator />
           </div>
 
-          {data?.user && (
-            <Button
-              variant="ghost"
-              className="w-full justify-start space-x-3 rounded-full text-sm font-normal"
-              onClick={handleSignOut}
-            >
-              <LogOutIcon size={16} />
-              <span className="block">Sair da conta</span>
-            </Button>
-          )}
+          <MenuItem
+            icon={<LogOutIcon size={16} />}
+            title="Sair da conta"
+            isPrivate
+            isAuthenticated={!!data?.user}
+            onClick={handleSignOut}
+          />
         </SheetContent>
       </Sheet>
     </div>
