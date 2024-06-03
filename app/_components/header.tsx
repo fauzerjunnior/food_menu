@@ -54,13 +54,9 @@ const Header = () => {
 
       <Sheet>
         <SheetTrigger>
-          <Button
-            size="icon"
-            variant="outline"
-            className="border-none bg-transparent"
-          >
+          <div className="flex h-8 cursor-pointer items-center rounded-ss-sm border-none bg-transparent px-2 transition-all hover:bg-gray-300">
             <MenuIcon />
-          </Button>
+          </div>
         </SheetTrigger>
 
         <SheetContent>
