@@ -101,6 +101,7 @@ const Header = () => {
               title="Meus pedidos"
               isPrivate
               isAuthenticated={!!data?.user}
+              href="/my-orders"
             />
 
             <MenuItem
