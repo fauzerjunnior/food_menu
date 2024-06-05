@@ -31,7 +31,17 @@ interface ICartContext {
     quantity,
     emptyCart,
   }: {
-    product: Product;
+    product: Prisma.ProductGetPayload<{
+      include: {
+        restaurant: {
+          select: {
+            id: true;
+            deliveryFee: true;
+            deliveryTimeMinutes: true;
+          };
+        };
+      };
+    }>;
     quantity: number;
     emptyCart?: boolean;
   }) => void;
@@ -85,10 +95,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     quantity,
     emptyCart,
   }: {
-    product: Product;
+    product: Prisma.ProductGetPayload<{
+      include: {
+        restaurant: {
+          select: {
+            id: true;
+            deliveryFee: true;
+            deliveryTimeMinutes: true;
+          };
+        };
+      };
+    }>;
     quantity: number;
     emptyCart?: boolean;
   }) => {
+    if (emptyCart) {
+      setProducts([]);
+    }
+
     const hasDifferentRestaurantInCart = products.some(
       (item) => item.restaurantId !== product.restaurantId,
     );
