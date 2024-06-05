@@ -33,7 +33,7 @@ const MyOrdersPage = async () => {
       <div className="px-5 py-6">
         <h2 className="font-semibold">Meus Pedidos</h2>
 
-        <div className="space-y-3">
+        <div className="space-y-3 pt-5">
           {orders.map((order) => (
             <OrderItem key={order.id} order={order} />
           ))}
